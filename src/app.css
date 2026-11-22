@@ -1,0 +1,1042 @@
+@import 'tailwindcss';
+@import "@skeletonlabs/skeleton";
+@import "@skeletonlabs/skeleton/optional/presets";
+@import "./theme-linkretro.css";
+@source "../node_modules/@skeletonlabs/skeleton-svelte/dist";
+
+/*
+  Upstream components mix Tailwind's dark: utilities (which follow the system
+  color scheme by default) with Skeleton's light-dark() tokens. This product is
+  light-only (matching the marketing site), so on a dark system the dark: classes
+  would pop up and blacken parts of the UI. Here the dark: variant is rebound to
+  html.dark, a class the pages never add — both mechanisms stay in light mode.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Body text face: the customer site itself uses Inter (SIL OFL 1.1, see static/fonts/OFL.txt).
+   The font ships with the site so it stays consistent offline; the display face PP Formula is a
+   commercially licensed font and is not redistributed. */
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('./fonts/inter-latin.woff2') format('woff2');
+}
+
+/* Display face Space Grotesk, monospace JetBrains Mono — same as the site, bundled (SIL OFL 1.1) */
+@font-face {
+	font-family: 'Space Grotesk';
+	font-style: normal;
+	font-weight: 300 700;
+	font-display: swap;
+	src: url('./fonts/space-grotesk-latin.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 100 800;
+	font-display: swap;
+	src: url('./fonts/jetbrains-mono-latin.woff2') format('woff2');
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@layer utilities {
+}
+
+html,
+body {
+	@apply h-full overflow-hidden;
+}
+
+/* ==========================================================================
+   LinkRetro brand layer — aligned with the customer site linkretro.com
+      Paper-grey ground + white surfaces, ink text, magenta pill buttons,
+      1px #e7e4ec hairline borders.
+      Color/font tokens live in theme-linkretro.css; only the pieces that
+      diverge from upstream are here, functional and layout styles untouched.
+   ========================================================================== */
+
+@layer base {
+	:root {
+		color-scheme: light;
+	}
+
+	body {
+		background-color: #f7f7f7;
+	}
+
+	a:focus-visible,
+	button:focus-visible,
+	select:focus-visible,
+	input:focus-visible {
+		outline: 2px solid #b41674;
+		outline-offset: 2px;
+	}
+}
+
+/* ---------- Top brand bar: white fill + hairline border, matching the site header ---------- */
+.brandbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	height: 64px;
+	padding: 0 1.25rem;
+	background: #ffffff;
+	border-bottom: 1px solid #e7e4ec;
+	flex: 0 0 auto;
+}
+
+.brandbar-left,
+.brandbar-right {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	min-width: 0;
+}
+
+.brand-lockup {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75rem;
+	min-width: 0;
+	text-decoration: none;
+}
+
+.brand-logo {
+	display: block;
+	height: 32px;
+	width: auto;
+	image-rendering: pixelated;
+}
+
+.brand-divider {
+	width: 1px;
+	height: 20px;
+	background: #e7e4ec;
+	flex: 0 0 auto;
+}
+
+.brand-product {
+	font-size: 0.875rem;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	color: #100b28;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.brand-product em {
+	font-style: normal;
+	font-weight: 400;
+	color: #8f8b99;
+}
+
+/* Right-hand action: same 14px/500 text as the site nav, hovering turns brand magenta */
+.brand-site {
+	font-size: 0.875rem;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	color: #100b28;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: color 100ms ease;
+}
+
+.brand-site:hover {
+	color: #b41674;
+}
+
+/* Guide entry: text instead of a question-mark icon (dashed underline hints "click for the docs") */
+.brand-help {
+	padding-bottom: 1px;
+	border-bottom: 1px dashed #c9c4d6;
+	font-size: 0.875rem;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	color: #100b28;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: color 100ms ease, border-color 100ms ease;
+}
+
+.brand-help:hover {
+	color: #b41674;
+	border-bottom-color: #b41674;
+}
+
+/* ---------- Left nav: upstream's light sidebar, recolored to a very pale brand-violet tint ---------- */
+aside {
+	background: #f7f6fb;
+	border-right: 1px solid #ece9f0;
+}
+
+.list-nav a {
+	border-radius: 10px;
+	transition: background-color 100ms ease, color 100ms ease;
+}
+
+.list-nav a:hover {
+	background: #efecf7;
+}
+
+/* Current page: upstream uses a light capsule; the shape stays, the color becomes
+   a tint of brand magenta.
+   Skeleton's !preset-filled-primary-500 carries !important and lives in a CSS layer,
+   an unlayered !important can't beat it, so the token is still overridden on the
+   container (token cascade always wins). */
+.list-nav a[class*='preset-filled-primary'] {
+	font-weight: 600;
+	border-radius: 10px;
+}
+
+/* Segmented control (Global / Console / Game ID): upstream marks the selection with a
+   grey slider, so the slider itself is hidden here and the selected label gets the
+   brand magenta directly (pill).
+   When disconnected the component is disabled and Skeleton fades the whole group to
+   50% opacity, which looks broken — pulled back to 1 here. */
+[data-scope='radio-group'][data-part='root'] {
+	opacity: 1 !important;
+}
+
+/* When disconnected Skeleton also fades each label to 50%, so the selection looks broken */
+[data-scope='radio-group'][data-part='root'] label {
+	opacity: 1 !important;
+}
+
+[data-scope='radio-group'][data-part='root'] > *:not(label) {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+
+[data-scope='radio-group'][data-part='root'] label[data-state='checked'] {
+	background-color: #b41674 !important;
+	color: #ffffff !important;
+	border-radius: 100px;
+}
+
+[data-scope='radio-group'][data-part='root'] label[data-state='unchecked'] {
+	color: #706c79 !important;
+}
+
+/* ---------- Buttons: the site uses 100px-radius pills ---------- */
+.btn {
+	border-radius: 100px;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+}
+
+.btn-icon {
+	border-radius: 100px;
+}
+
+/* ---------- Cards / popovers: white fill + hairline border + very soft shadow ---------- */
+.card {
+	background: #ffffff;
+	border: 1px solid #e7e4ec;
+	border-radius: 1.125rem;
+	box-shadow: 0 1px 2px rgb(16 11 40 / 0.05);
+}
+
+/* ---------- Form controls: white fill + hairline border (upstream uses a faint inner shadow that is nearly invisible in light mode) ---------- */
+.select,
+.input,
+.textarea {
+	background-color: #ffffff;
+	border: 1px solid #e7e4ec;
+	border-radius: 0.75rem;
+	color: #100b28;
+}
+
+.select:hover,
+.input:hover {
+	border-color: #b9b4c2;
+}
+
+.select:focus,
+.input:focus {
+	border-color: #b41674;
+}
+
+/* ---------- Firmware update: USB (embedded flasher) and OTA (BLE) split into two pages ---------- */
+/* Upstream caps the content column at 42rem; update pages widen it to 56rem (the embedded USB page is 800px wide) */
+div.max-w-2xl:has(.update-page) {
+	max-width: 56rem;
+}
+
+.update-page {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+/* Placeholder until the mount check resolves, so phones never flash the USB flasher */
+.update-loading {
+	flex: 1 1 auto;
+	min-height: 16rem;
+}
+
+/* Substitute notice for the USB page on phones / browsers without Web Serial */
+.usb-fallback {
+	max-width: 46rem;
+	padding: 1.6rem 1.75rem 1.75rem;
+	background: #ffffff;
+	border: 1px solid #e7e4ec;
+	border-radius: 1.125rem;
+	box-shadow: 0 1px 2px rgb(16 11 40 / 0.05);
+}
+
+.usb-fallback-kicker {
+	margin: 0 0 0.5rem;
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.65rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #8f8b99;
+}
+
+.usb-fallback h2 {
+	margin: 0 0 0.65rem;
+	font-size: 1.3rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: #100b28;
+}
+
+.usb-fallback p {
+	margin: 0 0 0.7rem;
+	font-size: 0.9rem;
+	line-height: 1.6;
+	color: #706c79;
+}
+
+.usb-fallback .btn {
+	margin-top: 0.5rem;
+}
+
+.updater-wrap {
+	display: flex;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.updater-frame {
+	flex: 1 1 auto;
+	width: 100%;
+	min-height: 760px;
+	border: 0;
+	border-radius: 14px;
+	background: #ffffff;
+}
+
+/* BLE OTA panel */
+.ble-panel {
+	max-width: 46rem;
+	background: #ffffff;
+	border: 1px solid #e7e4ec;
+	border-radius: 1.125rem;
+	padding: 1.25rem 1.35rem;
+	box-shadow: 0 1px 2px rgb(16 11 40 / 0.05);
+}
+
+.ble-head {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.ble-title {
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #100b28;
+}
+
+.ble-chip {
+	margin-left: auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	font-size: 0.75rem;
+	color: #332d40;
+	border: 1px solid #e7e4ec;
+	border-radius: 100px;
+	padding: 0.25rem 0.65rem;
+	white-space: nowrap;
+}
+
+.ble-dot {
+	width: 0.45rem;
+	height: 0.45rem;
+	border-radius: 50%;
+	background: #2fbf72;
+}
+
+.ble-sub {
+	margin: 0.55rem 0 0;
+	font-size: 0.82rem;
+	line-height: 1.55;
+	color: #706c79;
+}
+
+.ble-sub code {
+	font-size: 0.78rem;
+	background: #f5f3f7;
+	padding: 0.05rem 0.3rem;
+	border-radius: 0.35rem;
+}
+
+.ble-connect {
+	margin-top: 1.1rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.85rem;
+}
+
+.ble-hint {
+	font-size: 0.72rem;
+	color: #8f8b99;
+}
+
+.ble-row {
+	margin-top: 1.1rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.85rem;
+	justify-content: space-between;
+}
+
+/* Site-bundled firmware manifest (BLE panel) */
+.ble-fwlist {
+	margin-top: 1rem;
+}
+
+.ble-fwselect {
+	width: 100%;
+	background: #ffffff;
+	border: 1px solid #e7e4ec;
+	border-radius: 100px;
+	padding: 0.55rem 0.95rem;
+	font-size: 0.82rem;
+	font-family: inherit;
+	color: #100b28;
+	cursor: pointer;
+	transition: border-color 100ms ease;
+}
+
+.ble-fwselect:hover {
+	border-color: #b41674;
+}
+
+.ble-file {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-width: 0;
+}
+
+.ble-filename {
+	font-size: 0.82rem;
+	color: #100b28;
+	max-width: 24rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Why use Bluetooth (mirrors the note on the USB panel) */
+.ble-why {
+	margin: 1.1rem 0 0;
+	font-size: 0.72rem;
+	line-height: 1.65;
+	color: #706c79;
+}
+
+.ble-why b {
+	color: #706c79;
+	font-weight: 600;
+}
+
+/* Note shown when a model was auto-matched */
+.ble-auto {
+	margin: 0.45rem 0 0;
+	font-size: 0.72rem;
+	color: #706c79;
+}
+
+.ble-auto b {
+	color: #100b28;
+	font-weight: 600;
+}
+
+/* "Already up to date" badge */
+.ble-latest {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.15rem 0.55rem;
+	border-radius: 100px;
+	background: rgba(47, 191, 114, 0.14);
+	border: 1px solid rgba(47, 191, 114, 0.4);
+	color: #0b5c30;
+	font-size: 0.7rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* ---------- Help system: field help icons / per-page guide / manual ---------- */
+
+/* The content column is "scroll + flex column"; the default flex-shrink:1 squashes the guide block / manual and clips its text */
+.lr-page-scroll > * {
+	flex-shrink: 0;
+}
+
+/* Small question mark next to a field (Skeleton Tooltip trigger) */
+.help-tip {
+	display: inline-flex;
+	vertical-align: -2px;
+	margin-left: 4px;
+}
+
+.help-tip-trigger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+	color: #a6a3bf;
+	cursor: help;
+	transition: color 100ms ease;
+}
+
+.help-tip-trigger:hover,
+.help-tip-trigger:focus-visible {
+	color: #b41674;
+	background: transparent;
+}
+
+.help-tip-trigger svg {
+	width: 15px;
+	height: 15px;
+}
+
+.help-tip-arrow {
+	background: #ffffff;
+	border: 1px solid #e7e4ec;
+}
+
+.help-tip-card {
+	max-width: 20rem;
+	padding: 0.6rem 0.75rem;
+	border: 1px solid #e7e4ec;
+	border-radius: 10px;
+	background: #ffffff;
+	box-shadow: 0 10px 28px rgb(16 11 40 / 0.16);
+	color: #100b28;
+	font-size: 0.78rem;
+	line-height: 1.55;
+	font-weight: 400;
+}
+
+.help-tip-card p {
+	margin: 0;
+}
+
+/* Per-page onboarding guide at the top of each page */
+.page-guide {
+	border: 1px solid #e7e4ec;
+	border-radius: 14px;
+	background: #fbfafd;
+	overflow: hidden;
+}
+
+.page-guide-head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 12px 14px;
+	border: 0;
+	background: transparent;
+	color: #100b28;
+	cursor: pointer;
+	text-align: left;
+}
+
+.page-guide-head:hover .page-guide-title {
+	color: #b41674;
+}
+
+.page-guide-icon {
+	width: 16px;
+	height: 16px;
+	color: #b41674;
+	flex: 0 0 auto;
+}
+
+.page-guide-title {
+	font-family: var(--lr-font, 'Space Grotesk', sans-serif);
+	font-size: 0.82rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+
+.page-guide-hint {
+	margin-left: auto;
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.6rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #a6a3bf;
+}
+
+.page-guide-body {
+	padding: 0 14px 14px;
+}
+
+.page-guide-summary {
+	margin: 0 0 8px;
+	font-size: 0.82rem;
+	line-height: 1.6;
+	color: #4a455f;
+}
+
+.page-guide-steps {
+	margin: 0 0 10px;
+	padding-left: 1.1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.page-guide-steps li {
+	font-size: 0.78rem;
+	line-height: 1.6;
+	color: #706c79;
+}
+
+.page-guide-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-family: var(--lr-font, 'Space Grotesk', sans-serif);
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: #b41674;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+}
+
+.page-guide-link:hover {
+	border-bottom-color: currentColor;
+}
+
+/* ---------- Manual pages /guide ---------- */
+div.max-w-2xl:has(.manual) {
+	max-width: 84rem;
+}
+
+.manual {
+	color: #100b28;
+}
+
+.manual-head {
+	padding-bottom: 18px;
+	border-bottom: 1px solid #e7e4ec;
+}
+
+.manual-kicker {
+	margin: 0 0 8px;
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.62rem;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #b41674;
+}
+
+.manual-head h1 {
+	margin: 0 0 8px;
+	font-size: 2rem;
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	line-height: 1.1;
+}
+
+.manual-lede {
+	margin: 0;
+	max-width: 46rem;
+	font-size: 0.86rem;
+	line-height: 1.7;
+	color: #706c79;
+}
+
+.manual-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 14px;
+	margin-top: 16px;
+}
+
+.manual-lang {
+	display: inline-flex;
+	padding: 3px;
+	border: 1px solid #e7e4ec;
+	border-radius: 999px;
+	background: #ffffff;
+}
+
+.manual-lang button {
+	padding: 5px 14px;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	font-family: var(--lr-font, 'Space Grotesk', sans-serif);
+	font-size: 0.72rem;
+	font-weight: 600;
+	color: #706c79;
+	cursor: pointer;
+}
+
+.manual-lang button.active {
+	background: #100b28;
+	color: #ffffff;
+}
+
+.manual-grid {
+	display: grid;
+	grid-template-columns: 220px minmax(0, 1fr);
+	gap: 34px;
+	margin-top: 26px;
+	align-items: start;
+}
+
+.manual-toc {
+	position: sticky;
+	top: 12px;
+	max-height: calc(100dvh - 120px);
+	overflow: auto;
+	padding-right: 8px;
+	border-right: 1px solid #ece9f0;
+}
+
+.manual-toc-title {
+	margin: 0 0 10px;
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.6rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #a6a3bf;
+}
+
+.manual-toc ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.manual-toc a {
+	display: block;
+	padding: 4px 8px;
+	border-radius: 6px;
+	font-size: 0.78rem;
+	line-height: 1.4;
+	color: #4a455f;
+	text-decoration: none;
+}
+
+.manual-toc a:hover {
+	background: #f5f3f7;
+	color: #b41674;
+}
+
+.manual-toc .lvl2 a {
+	padding-left: 18px;
+	font-size: 0.74rem;
+	color: #706c79;
+}
+
+.manual-toc .toc-group {
+	margin-top: 8px;
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.58rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #a6a3bf;
+	padding: 6px 8px 2px;
+}
+
+.manual-body {
+	min-width: 0;
+}
+
+.manual-section > h2 {
+	margin: 0 0 14px;
+	font-size: 1.35rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+.manual-section + .manual-section {
+	margin-top: 34px;
+	padding-top: 26px;
+	border-top: 1px solid #e7e4ec;
+}
+
+.manual-chapter {
+	margin-bottom: 26px;
+	scroll-margin-top: 90px;
+}
+
+.manual-chapter h3 {
+	margin: 0 0 8px;
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.manual-route {
+	margin-left: 8px;
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.62rem;
+	font-weight: 400;
+	letter-spacing: 0.04em;
+	color: #a6a3bf;
+}
+
+.manual-chapter h4 {
+	margin: 14px 0 6px;
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.6rem;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #a6a3bf;
+}
+
+.manual-chapter p {
+	margin: 0 0 8px;
+	font-size: 0.9rem;
+	line-height: 1.75;
+	color: #3b3550;
+}
+
+.manual-chapter ol,
+.manual-chapter ul {
+	margin: 0 0 10px;
+	padding-left: 1.15rem;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.manual-chapter li {
+	font-size: 0.82rem;
+	line-height: 1.65;
+	color: #4a455f;
+}
+
+.manual-note {
+	padding: 10px 12px;
+	border-left: 3px solid #b41674;
+	background: #fdf4f9;
+	border-radius: 0 8px 8px 0;
+	font-size: 0.8rem !important;
+}
+
+.manual-fields {
+	margin: 0 0 10px;
+	display: flex;
+	flex-direction: column;
+}
+
+.manual-fields > div {
+	display: grid;
+	grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
+	gap: 12px;
+	padding: 8px 0;
+	border-top: 1px solid #f0edf4;
+}
+
+.manual-fields dt {
+	font-family: var(--lr-mono, monospace);
+	font-size: 0.62rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: #706c79;
+	padding-top: 2px;
+}
+
+.manual-fields dd {
+	margin: 0;
+	font-size: 0.82rem;
+	line-height: 1.65;
+	color: #4a455f;
+}
+
+/* Manual illustrations: hairline border plus shadow, click to open the full image */
+.manual-figure {
+	margin: 12px 0 16px;
+}
+
+.manual-figure a {
+	display: block;
+	border-radius: 12px;
+	overflow: hidden;
+	border: 1px solid #e7e4ec;
+	box-shadow: 0 8px 24px rgb(16 11 40 / 0.06);
+	transition: box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.manual-figure a:hover {
+	border-color: #d7d1e2;
+	box-shadow: 0 12px 30px rgb(16 11 40 / 0.12);
+}
+
+.manual-figure img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.manual-figure figcaption {
+	margin-top: 8px;
+	font-size: 0.76rem;
+	line-height: 1.65;
+	color: #706c79;
+}
+
+@media (max-width: 860px) {
+	.manual-grid {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 18px;
+	}
+
+	.manual-toc {
+		position: static;
+		max-height: none;
+		border-right: 0;
+		border-bottom: 1px solid #ece9f0;
+		padding-bottom: 12px;
+	}
+
+	.manual-fields > div {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2px;
+	}
+}
+
+@media print {
+	.lr-brand,
+	.lr-actions,
+	.manual-toc,
+	.manual-actions,
+	.lr-footer,
+	.page-guide {
+		display: none !important;
+	}
+
+	.manual-grid {
+		display: block;
+	}
+
+	.manual-chapter {
+		break-inside: avoid;
+	}
+}
+
+/* ---------- Attribution: the line Apache-2.0 requires us to keep ---------- */
+.brand-foot {
+	margin-top: auto;
+	padding: 0.875rem 0.25rem 0.25rem;	border-top: 1px solid #ece9f0;
+	font-size: 0.6875rem;
+	line-height: 1.55;
+	color: #706c79;
+}
+
+.brand-foot a {
+	color: #100b28;
+	text-decoration: none;
+	border-bottom: 1px solid #d3cfdd;
+}
+
+.brand-foot a:hover {
+	color: #b41674;
+	border-bottom-color: #b41674;
+}
+
+.brand-foot .brand-foot-lic {
+	font-size: 0.625rem;
+	letter-spacing: 0.04em;
+	color: #8f8b99;
+}
+
+@media (max-width: 640px) {
+	.brandbar {
+		padding: 0 0.875rem;
+	}
+
+	.brand-product,
+	.brand-divider,
+	.brand-site {
+		display: none;
+	}
+
+	/* A 48px heading does not fit on one line on phones */
+	.container .h2 {
+		font-size: 1.875rem;
+		line-height: 1.15;
+	}
+}
+
+/* Gradient hairline under the brand bar: echoes the magenta-to-cyan announcement strip on the site */
+.brandbar {
+	position: relative;
+}
+.brandbar::after {
+	content: '';
+	position: absolute;
+	inset: auto 0 0 0;
+	height: 2px;
+	background: linear-gradient(90deg, #b41674, #6926c8 45%, #20cdf0);
+	opacity: 0.9;
+}
+/* Sidebar selection: the links use Skeleton's !preset-filled-primary-500 (a utility class with !important,
+   so a direct override loses to layer precedence). Redefining the tokens on the container always wins through the token cascade;
+   here primary-500 becomes a pale magenta fill with a darker magenta text color. */
+.list-nav {
+	--color-primary-500: rgb(180 22 116 / 0.12);
+	--color-primary-contrast-500: #94105e;
+}

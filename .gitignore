@@ -1,0 +1,33 @@
+_site/
+.bundle/
+vendor/
+Gemfile.lock
+
+# Upstream ignores vendor/ for Ruby. The flashing kernel of the firmware
+# updater lives in static/updater/vendor/ and MUST be committed, otherwise the
+# delivered site cannot flash anything.
+!static/updater/vendor/
+!static/updater/vendor/**
+
+.DS_Store
+node_modules
+/build
+/dist
+/.svelte-kit
+/package
+
+# Firmware is generated into static/firmware by tools/sync-firmware.mjs.
+# Source images live in firmware/ but the binaries are NOT published to the
+# public repository: drop your own *.bin there locally.
+/static/firmware
+/firmware/*.bin
+
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+
+# OTA images are build products extracted from the full images.
+/static/ota
+/OTA_Firmware
+

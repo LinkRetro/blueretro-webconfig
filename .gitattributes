@@ -1,0 +1,4 @@
+# Line endings of HTML/CSS/JS in the build output must match the local bytes:
+# disable git's automatic EOL conversion (equivalent to treating every file as binary-safe text),
+# otherwise the size and even the hashes change after a checkout on another machine.
+* -text

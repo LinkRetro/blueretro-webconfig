@@ -1,0 +1,35 @@
+LinkRetro Wireless Receiver — Web Configuration Tool
+=====================================================
+
+This product is based on the open-source BlueRetro project by darthcloud
+(https://github.com/darthcloud/BlueRetro), licensed under the Apache License 2.0.
+
+Original work
+-------------
+BlueRetro WebCfg (upstream commit 8bc92d1, 30 May 2026)
+Copyright (c) darthcloud and contributors
+Licensed under the Apache License, Version 2.0 — see LICENSE.
+
+Modifications for LinkRetro
+---------------------------
+  * Interface re-branded and re-themed for linkretro.com (logo, palette, type, controls)
+  * Update page rebuilt: USB and Bluetooth methods, built-in firmware list,
+    automatic firmware selection and "latest version" marking
+  * Full firmware images unpacked at build time into app-only images for the
+    wireless update path
+  * Bluetooth and USB connection lifecycle hardened (link release, retry policy)
+  * Upstream remote version check ("Upgrade Available") removed
+  * Preset list bundled with the site (34 presets, no runtime downloads)
+  * Upstream CNAME record (blueretro.io) removed from the project
+  * Built for the /tools/blueretro-webconfig/ sub-path (build-time base path)
+
+Third-party components
+----------------------
+  * Inter typeface — SIL Open Font License 1.1 (bundled with the site)
+  * Space Grotesk typeface — SIL Open Font License 1.1 (bundled with the site)
+  * JetBrains Mono typeface — SIL Open Font License 1.1 (bundled with the site)
+  * esptool-js — see the licence file next to it in the site under updater/vendor/
+
+Neither BlueRetro nor LinkRetro trademarks are transferred by this notice.
+The interface branding belongs to LinkRetro. The underlying software remains
+available under the Apache License 2.0.

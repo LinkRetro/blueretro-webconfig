@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title data-i18n="tester_title">Controller tester — LinkRetro Wireless Receiver</title>
+<!--
+  LinkRetro wireless receiver — controller tester / visualiser
+  把现代手柄（PS5 / Xbox One / Switch Pro …）按默认映射画成 Original Xbox 手柄。
+
+  映射依据（本仓库固件源码）：
+    · ESP32 侧 BlueRetro 输出标准布局 -> 13 字节 PadIn 经 I2C 发给 RP2040
+    · RP2040 的 XboxOG_GP.cpp 做「同名直通」：A→A B→B X→X Y→Y，LB→White，RB→Black
+    · 浏览器 Gamepad API 的 standard 布局与 Bluepad32 标准布局一致，故默认映射为位置一一对应
+
+  基于开源项目 BlueRetro（作者 darthcloud，Apache License 2.0）
+  许可：Apache License 2.0
+-->
+<link rel="icon" type="image/svg+xml" sizes="any" href="../brand/favicon.svg">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="tester.css">
+<link rel="stylesheet" href="site-theme.css">
+</head>
+<body>
+<div class="wrap wide">
+
+  <div class="banner" id="banner" hidden>
+    <b id="banner-title"></b>
+    <span id="banner-body"></span>
+  </div>
+
+  <header class="plate">
+    <div class="plate-top">
+      <img class="wordmark" src="../brand/linkretro-logo.png" alt="LinkRetro">
+      <div class="plate-tools">
+        <div class="pill" id="pill"><span data-i18n="tester_waiting">还没有检测到手柄</span></div>
+        <label class="langwrap">
+          <span class="langicon" aria-hidden="true">🌐</span>
+          <select class="langsel" id="lang" data-i18n-title="adv_lang"></select>
+        </label>
+      </div>
+    </div>
+    <div class="plate-bottom">
+      <h1 data-i18n="tester_title">手柄检测</h1>
+      <span class="vsep" aria-hidden="true"></span>
+      <p data-i18n="tester_subtitle">连上手柄，实时查看按键、摇杆和扳机</p>
+    </div>
+  </header>
+
+  <!-- 空状态：醒目提示 -->
+  <div class="callout" id="empty">
+    <b data-i18n="tester_waiting">还没有检测到手柄</b>
+    <p data-i18n="tester_waiting_hint">请先把手柄连到这台电脑…</p>
+  </div>
+
+  <div id="live" hidden>
+
+    <!-- 设备信息 -->
+    <div class="padinfo">
+      <span class="dot-ok">●</span>
+      <span id="dev-name" class="mono">—</span>
+      <span class="sep">·</span>
+      <span class="lbl" data-i18n="tester_mapping">映射</span><span class="mono" id="dev-map">—</span>
+      <span class="sep">·</span>
+      <span class="lbl" data-i18n="tester_poll">刷新率</span><span class="mono" id="dev-poll">—</span>
+      <span class="grow"></span>
+      <button class="btn ghost small" id="btn-reset" data-i18n="tester_reset">重置</button>
+    </div>
+
+    <!-- ★ 核心：Original Xbox 手柄可视化 -->
+    <div class="padwrap">
+      <svg id="pad" viewBox="0 0 760 400" preserveAspectRatio="xMidYMid meet" aria-label="Original Xbox controller">
+        <!-- 扳机 -->
+        <g class="trig" id="trig-l">
+          <text class="trig-lbl" x="104" y="31">L</text>
+          <rect class="trig-bg" x="126" y="16" width="180" height="16" rx="8"/>
+          <rect class="trig-fill" id="trig-l-fill" x="126" y="16" width="0" height="16" rx="8"/>
+        </g>
+        <g class="trig" id="trig-r">
+          <rect class="trig-bg" x="454" y="16" width="180" height="16" rx="8"/>
+          <rect class="trig-fill" id="trig-r-fill" x="454" y="16" width="0" height="16" rx="8"/>
+          <text class="trig-lbl" x="664" y="31">R</text>
+        </g>
+
+        <!-- 手柄本体 -->
+        <path class="padbody" d="M380 62
+          C300 62 240 80 200 110
+          C150 147 118 202 108 260
+          C100 308 122 342 162 346
+          C205 350 236 318 258 280
+          C276 248 300 232 380 232
+          C460 232 484 248 502 280
+          C524 318 555 350 598 346
+          C638 342 660 308 652 260
+          C642 202 610 147 560 110
+          C520 80 460 62 380 62 Z"/>
+
+        <!-- 左摇杆 -->
+        <g class="stick" id="stick-l">
+          <circle class="stick-base" cx="252" cy="168" r="46"/>
+          <circle class="stick-ring" cx="252" cy="168" r="46"/>
+          <line class="cross" x1="206" y1="168" x2="298" y2="168"/>
+          <line class="cross" x1="252" y1="122" x2="252" y2="214"/>
+          <circle class="stick-dot" id="dot-l" cx="252" cy="168" r="15"/>
+          <text class="stick-tag" x="252" y="240" data-i18n="tester_left">左摇杆</text>
+        </g>
+        <!-- 右摇杆 -->
+        <g class="stick" id="stick-r">
+          <circle class="stick-base" cx="508" cy="262" r="46"/>
+          <circle class="stick-ring" cx="508" cy="262" r="46"/>
+          <line class="cross" x1="462" y1="262" x2="554" y2="262"/>
+          <line class="cross" x1="508" y1="216" x2="508" y2="308"/>
+          <circle class="stick-dot" id="dot-r" cx="508" cy="262" r="15"/>
+          <text class="stick-tag" x="508" y="334" data-i18n="tester_right">右摇杆</text>
+        </g>
+        <!-- 摇杆按下 -->
+        <g class="pbtn l3r3" id="btn-l3"><circle cx="252" cy="168" r="7"/><text x="252" y="171">L3</text></g>
+        <g class="pbtn l3r3" id="btn-r3"><circle cx="508" cy="262" r="7"/><text x="508" y="265">R3</text></g>
+
+        <!-- 十字键 -->
+        <g id="dpad">
+          <rect class="dpad-arm" id="dp-up"    x="240" y="226" width="20" height="26" rx="4"/>
+          <rect class="dpad-arm" id="dp-down"  x="240" y="274" width="20" height="26" rx="4"/>
+          <rect class="dpad-arm" id="dp-left"  x="204" y="252" width="26" height="20" rx="4"/>
+          <rect class="dpad-arm" id="dp-right" x="270" y="252" width="26" height="20" rx="4"/>
+          <rect class="dpad-c" x="238" y="250" width="24" height="24" rx="3"/>
+        </g>
+
+        <!-- ABXY（Original Xbox 配色：A 绿 B 红 X 蓝 Y 黄）-->
+        <g class="pbtn face a" id="btn-a"><circle cx="508" cy="206" r="21"/><text x="508" y="213">A</text></g>
+        <g class="pbtn face b" id="btn-b"><circle cx="545" cy="169" r="21"/><text x="545" y="176">B</text></g>
+        <g class="pbtn face x" id="btn-x"><circle cx="471" cy="169" r="21"/><text x="471" y="176">X</text></g>
+        <g class="pbtn face y" id="btn-y"><circle cx="508" cy="132" r="21"/><text x="508" y="139">Y</text></g>
+
+        <!-- White / Black -->
+        <g class="pbtn wb white" id="btn-white"><ellipse cx="440" cy="92" rx="30" ry="15"/><text x="440" y="97">White</text></g>
+        <g class="pbtn wb black" id="btn-black"><ellipse cx="576" cy="92" rx="30" ry="15"/><text x="576" y="97">Black</text></g>
+
+        <!-- Back / Start -->
+        <g class="pbtn sys" id="btn-back"><ellipse cx="336" cy="212" rx="22" ry="12"/><text x="336" y="216">Back</text></g>
+        <g class="pbtn sys" id="btn-start"><ellipse cx="424" cy="212" rx="22" ry="12"/><text x="424" y="216">Start</text></g>
+      </svg>
+    </div>
+
+    <!-- 数值 -->
+    <div class="grid2">
+      <section class="card">
+        <h2 class="card-title" data-i18n="tester_sticks">摇杆</h2>
+        <div class="kv"><span class="lbl" data-i18n="tester_left">左摇杆</span><span class="mono" id="v-l">—</span></div>
+        <div class="kv"><span class="lbl" data-i18n="tester_right">右摇杆</span><span class="mono" id="v-r">—</span></div>
+        <div class="kv"><span class="lbl" data-i18n="tester_drift">漂移</span><span class="mono" id="v-drift">—</span></div>
+        <p class="hint" id="drift-note"></p>
+      </section>
+      <section class="card">
+        <h2 class="card-title" data-i18n="tester_triggers">扳机</h2>
+        <div class="kv"><span class="lbl">L</span><span class="mono" id="v-lt">0.00</span></div>
+        <div class="kv"><span class="lbl">R</span><span class="mono" id="v-rt">0.00</span></div>
+        <h2 class="card-title mt" id="rumble-title" data-i18n="tester_rumble">震动测试</h2>
+        <div class="btnrow">
+          <button class="btn ghost small" id="btn-rumble-weak" data-i18n="tester_rumble_weak">轻震</button>
+          <button class="btn ghost small" id="btn-rumble-strong" data-i18n="tester_rumble_strong">强震</button>
+          <button class="btn ghost small" id="btn-rumble-both" data-i18n="tester_rumble_both">一起</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2 class="card-title" data-i18n="tester_buttons">按键</h2>
+      <p class="hint" id="btn-progress"></p>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="card-title"><span data-i18n="tester_raw">原始数据</span></h2>
+      <pre class="raw" id="raw">—</pre>
+      <div class="advbtns">
+        <button class="btn ghost small" id="btn-copy" data-i18n="tester_copy">复制检测报告</button>
+        <span class="grow"></span>
+        <a class="btn ghost small" href="index.html" data-i18n="app_product_short">通用无线接收器</a>
+      </div>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <div>
+      <p class="credit" data-i18n="credit">基于开源项目 BlueRetro（作者 darthcloud）</p>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay" id="modal" hidden>
+  <div class="panel narrow">
+    <h2 id="m-title">提示</h2>
+    <pre class="mbody" id="m-body"></pre>
+    <div class="advbtns"><span class="grow"></span><button class="btn primary" id="m-ok" data-i18n="btn_ok">好</button></div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="jzw-i18n.js"></script>
+<script src="js/brfw-i18n.js"></script>
+<script src="js/tester.js"></script>
+</body>
+</html>

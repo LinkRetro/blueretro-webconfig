@@ -1,0 +1,104 @@
+[
+	{
+		"name": "cdi_gamepad.json"
+	},
+	{
+		"name": "dc_bleemcast_playstation_controller.json"
+	},
+	{
+		"name": "dc_fps_rel_right_axes_steam_ctrl_lizard.json"
+	},
+	{
+		"name": "dc_kbm_fps_steam_ctrl_lizard.json"
+	},
+	{
+		"name": "default_joystick_to_mouse.json"
+	},
+	{
+		"name": "default_mouse_kb.json"
+	},
+	{
+		"name": "default_mouse.json"
+	},
+	{
+		"name": "default_pad_kb.json"
+	},
+	{
+		"name": "default_pad.json"
+	},
+	{
+		"name": "doom_fx3_snes_ctrl+mouse.json"
+	},
+	{
+		"name": "doom_fx3_snes_mouse_only.json"
+	},
+	{
+		"name": "gc_exlene.json"
+	},
+	{
+		"name": "gc_face.json"
+	},
+	{
+		"name": "gc_generic_merge_trigger.json"
+	},
+	{
+		"name": "gc_rogue_leader.json"
+	},
+	{
+		"name": "jag_cycle_shift.json"
+	},
+	{
+		"name": "latency_test.json"
+	},
+	{
+		"name": "n64_fighting.json"
+	},
+	{
+		"name": "n64_fps.json"
+	},
+	{
+		"name": "n64_ge_pd_1.2_graslu00.json"
+	},
+	{
+		"name": "n64_ge_pd_2.2_mp.json"
+	},
+	{
+		"name": "n64_ge_pd_2.2_sp.json"
+	},
+	{
+		"name": "n64_ge_pd_2.4_mp_graslu00.json"
+	},
+	{
+		"name": "n64_ge_pd_2.4_sp_graslu00.json"
+	},
+	{
+		"name": "n64_jet_force_gemini.json"
+	},
+	{
+		"name": "n64_racing.json"
+	},
+	{
+		"name": "n64_sw_flight.json"
+	},
+	{
+		"name": "n64_sw_sote_fps.json"
+	},
+	{
+		"name": "n64_tony_hawk.json"
+	},
+	{
+		"name": "nes_smash_tv_dual_pad_p1.json"
+	},
+	{
+		"name": "nes_smash_tv_dual_pad_p2.json"
+	},
+	{
+		"name": "rf_brawler64_xinput.json"
+	},
+	{
+		"name": "sw_left_joycon_upright.json"
+	},
+	{
+		"name": "sw_right_joycon_upright.json"
+	}
+]

@@ -1,0 +1,106 @@
+<script lang="ts">
+	import { base } from '$app/paths';
+	import { page } from '$app/state';
+	import { brand } from '$lib/brand';
+
+	interface Props {
+		onItemSelect?: VoidFunction;
+	}
+
+	let classesActive = $derived((href: string) =>
+		page.url.pathname.includes(href) ? '!preset-filled-primary-500 pl-6 rounded' : 'pl-4');
+	
+	let { onItemSelect = $bindable() }: Props = $props();
+</script>
+
+<div class="flex flex-col h-full">
+<nav class="list-nav">
+	<ul>
+		<p class="font-bold text-xl">Controller</p>
+		<li class="flex flex-col">
+			<a
+				onclick={onItemSelect}
+				class={classesActive('/controller/global')}
+				href="{base}/controller/global">Global</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a
+				onclick={onItemSelect}
+				class={classesActive('/controller/output')}
+				href="{base}/controller/output">Output</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/controller/n64')} href="{base}/controller/n64"
+				>N64 Controller Pak</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/controller/dcvmu')} href="{base}/controller/dcvmu"
+				>DC VMU Manager</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/controller/ps1mc')} href="{base}/controller/ps1mc"
+				>PS1 Memory Card</a
+			>
+		</li>
+		<p class="font-bold text-xl">Button Mappings</p>
+		<li class="flex flex-col">
+			<a
+				onclick={onItemSelect}
+				class={classesActive('/controller/presets')}
+				href="{base}/controller/presets">Presets</a
+			>
+		</li>
+		<li class=" flex flex-col">
+			<a
+				onclick={onItemSelect}
+				class={classesActive('/controller/buttons')}
+				href="{base}/controller/buttons">Custom</a
+			>
+		</li>
+
+		<p class="font-bold text-xl">System</p>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/system/files')} href="{base}/system/files"
+				>Files</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/system/manage')} href="{base}/system/manage"
+				>Manage</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/system/update')} href="{base}/system/update"
+				>USB Update</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/system/ota')} href="{base}/system/ota"
+				>OTA Update</a
+			>
+		</li>
+		<li class="flex flex-col">
+			<a onclick={onItemSelect} class={classesActive('/system/debug')} href="{base}/system/debug"
+				>Debug</a
+			>
+		</li>
+	</ul>
+</nav>
+
+<!-- Open-source attribution: required by Apache-2.0, do not remove -->
+<footer class="brand-foot">
+	<p>
+		Based on
+		<a href={brand.upstream.repo} target="_blank" rel="noreferrer">{brand.upstream.name}</a>
+		by {brand.upstream.author}
+	</p>
+	<p class="brand-foot-lic">{brand.upstream.license} · {brand.siteLabel}</p>
+	<p>
+		<a href="{base}/guide">Manual &amp; help</a>
+	</p>
+</footer>
+</div>

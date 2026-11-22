@@ -1,0 +1,247 @@
+/*!
+ * theme-linkretro.css — LinkRetro theme tokens (Skeleton theme format)
+ *
+ * Colors and fonts are taken straight from the linkretro.com design tokens:
+ *   --ink #100B28 · --paper #F7F7F7 · --line #E7E4EC · --muted #706C79
+ *   --purple #B41674 (primary brand color) · --cyan #20CDF0 · --acid #78FF43 · --violet #6926C8
+ *   Fonts: Space Grotesk (headings) · Inter (body) · JetBrains Mono (monospace)
+ *
+ * Structure matches the stock Skeleton themes: 50–950 eleven-step scale plus a contrast foreground per step.
+ * To retune colors edit only this file, never the class names inside components.
+ */
+[data-theme='linkretro'] {
+	/* Light-only: the UI will not darken when the system is in dark mode */
+	color-scheme: light;
+	--text-scaling: 1.067;
+	--base-font-color: #100b28;
+	--base-font-color-dark: #100b28;
+	--base-font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Noto Sans',
+		'Microsoft YaHei UI', 'PingFang SC', sans-serif;
+	--base-font-size: inherit;
+	--base-line-height: inherit;
+	--base-font-weight: 400;
+	--base-font-style: normal;
+	--base-letter-spacing: 0em;
+	--heading-font-color: inherit;
+	--heading-font-color-dark: inherit;
+	--heading-font-family: 'Space Grotesk', 'Inter', 'Segoe UI', system-ui, -apple-system,
+		'Noto Sans', 'Microsoft YaHei UI', 'PingFang SC', sans-serif;
+	--heading-font-weight: 700;
+	--heading-font-style: normal;
+	--heading-letter-spacing: -0.02em;
+	--anchor-font-color: #b41674;
+	--anchor-font-color-dark: #b41674;
+	--anchor-font-family: inherit;
+	--anchor-font-size: inherit;
+	--anchor-line-height: inherit;
+	--anchor-font-weight: inherit;
+	--anchor-font-style: inherit;
+	--anchor-letter-spacing: inherit;
+	--anchor-text-decoration: none;
+	--anchor-text-decoration-hover: underline;
+	--anchor-text-decoration-active: none;
+	--anchor-text-decoration-focus: none;
+	--spacing: 0.25rem;
+	--radius-base: 0.75rem;
+	--radius-container: 1rem;
+	--default-border-width: 1px;
+	--default-divide-width: 1px;
+	--default-ring-width: 1px;
+	--body-background-color: #f7f7f7;
+	--body-background-color-dark: #f7f7f7;
+
+	/* Primary: brand magenta #B41674 */
+	--color-primary-50: #fdf0f7;
+	--color-primary-100: #fbdcec;
+	--color-primary-200: #f7bcdb;
+	--color-primary-300: #f090c3;
+	--color-primary-400: #d4408f;
+	--color-primary-500: #b41674;
+	--color-primary-600: #94105e;
+	--color-primary-700: #7a0d4e;
+	--color-primary-800: #5c0a3b;
+	--color-primary-900: #3d0727;
+	--color-primary-950: #220416;
+	--color-primary-contrast-dark: #3d0727;
+	--color-primary-contrast-light: #ffffff;
+	--color-primary-contrast-50: var(--color-primary-contrast-dark);
+	--color-primary-contrast-100: var(--color-primary-contrast-dark);
+	--color-primary-contrast-200: var(--color-primary-contrast-dark);
+	--color-primary-contrast-300: var(--color-primary-contrast-dark);
+	--color-primary-contrast-400: var(--color-primary-contrast-light);
+	--color-primary-contrast-500: var(--color-primary-contrast-light);
+	--color-primary-contrast-600: var(--color-primary-contrast-light);
+	--color-primary-contrast-700: var(--color-primary-contrast-light);
+	--color-primary-contrast-800: var(--color-primary-contrast-light);
+	--color-primary-contrast-900: var(--color-primary-contrast-light);
+	--color-primary-contrast-950: var(--color-primary-contrast-light);
+
+	/* Secondary: brand cyan #20CDF0 */
+	--color-secondary-50: #ecfbff;
+	--color-secondary-100: #d2f6ff;
+	--color-secondary-200: #a8eeff;
+	--color-secondary-300: #6fe3fb;
+	--color-secondary-400: #20cdf0;
+	--color-secondary-500: #0fb0d4;
+	--color-secondary-600: #0a8ead;
+	--color-secondary-700: #086e87;
+	--color-secondary-800: #064f61;
+	--color-secondary-900: #043440;
+	--color-secondary-950: #021e26;
+	--color-secondary-contrast-dark: #021e26;
+	--color-secondary-contrast-light: #ffffff;
+	--color-secondary-contrast-50: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-100: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-200: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-300: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-400: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-500: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-600: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-700: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-800: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-900: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-950: var(--color-secondary-contrast-light);
+
+	/* Tertiary: brand ink #100B28 (dark pills, secondary buttons) */
+	--color-tertiary-50: #f4f3f8;
+	--color-tertiary-100: #e9e7f0;
+	--color-tertiary-200: #d3cfdd;
+	--color-tertiary-300: #b3aec2;
+	--color-tertiary-400: #8b8599;
+	--color-tertiary-500: #625c72;
+	--color-tertiary-600: #464052;
+	--color-tertiary-700: #332d40;
+	--color-tertiary-800: #231d33;
+	--color-tertiary-900: #100b28;
+	--color-tertiary-950: #080518;
+	--color-tertiary-contrast-dark: #080518;
+	--color-tertiary-contrast-light: #ffffff;
+	--color-tertiary-contrast-50: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-100: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-200: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-300: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-400: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-500: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-600: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-700: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-800: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-900: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-950: var(--color-tertiary-contrast-light);
+
+	/* Success: site green #2FBF72 */
+	--color-success-50: #eafaf1;
+	--color-success-100: #cdf3de;
+	--color-success-200: #9ee7bf;
+	--color-success-300: #63d599;
+	--color-success-400: #2fbf72;
+	--color-success-500: #128c4a;
+	--color-success-600: #0e743d;
+	--color-success-700: #0b5c30;
+	--color-success-800: #084524;
+	--color-success-900: #053018;
+	--color-success-950: #031b0e;
+	--color-success-contrast-dark: #031b0e;
+	--color-success-contrast-light: #ffffff;
+	--color-success-contrast-50: var(--color-success-contrast-dark);
+	--color-success-contrast-100: var(--color-success-contrast-dark);
+	--color-success-contrast-200: var(--color-success-contrast-dark);
+	--color-success-contrast-300: var(--color-success-contrast-dark);
+	--color-success-contrast-400: var(--color-success-contrast-dark);
+	--color-success-contrast-500: var(--color-success-contrast-dark);
+	--color-success-contrast-600: var(--color-success-contrast-light);
+	--color-success-contrast-700: var(--color-success-contrast-light);
+	--color-success-contrast-800: var(--color-success-contrast-light);
+	--color-success-contrast-900: var(--color-success-contrast-light);
+	--color-success-contrast-950: var(--color-success-contrast-light);
+
+	/* Warning: site orange #FF6B35 */
+	--color-warning-50: #fff4ee;
+	--color-warning-100: #ffe6d6;
+	--color-warning-200: #ffc9a8;
+	--color-warning-300: #ffa875;
+	--color-warning-400: #ff8a4d;
+	--color-warning-500: #ff6b35;
+	--color-warning-600: #e0501c;
+	--color-warning-700: #b83d13;
+	--color-warning-800: #8f2f0f;
+	--color-warning-900: #66210b;
+	--color-warning-950: #3d1306;
+	--color-warning-contrast-dark: #3d1306;
+	--color-warning-contrast-light: #ffffff;
+	--color-warning-contrast-50: var(--color-warning-contrast-dark);
+	--color-warning-contrast-100: var(--color-warning-contrast-dark);
+	--color-warning-contrast-200: var(--color-warning-contrast-dark);
+	--color-warning-contrast-300: var(--color-warning-contrast-dark);
+	--color-warning-contrast-400: var(--color-warning-contrast-dark);
+	--color-warning-contrast-500: var(--color-warning-contrast-dark);
+	--color-warning-contrast-600: var(--color-warning-contrast-dark);
+	--color-warning-contrast-700: var(--color-warning-contrast-light);
+	--color-warning-contrast-800: var(--color-warning-contrast-light);
+	--color-warning-contrast-900: var(--color-warning-contrast-light);
+	--color-warning-contrast-950: var(--color-warning-contrast-light);
+
+	/* Error: #D92D20 */
+	--color-error-50: #fef3f2;
+	--color-error-100: #fee4e2;
+	--color-error-200: #fecdca;
+	--color-error-300: #fda29b;
+	--color-error-400: #f97066;
+	--color-error-500: #d92d20;
+	--color-error-600: #b42318;
+	--color-error-700: #912018;
+	--color-error-800: #7a271a;
+	--color-error-900: #55160c;
+	--color-error-950: #3b0a06;
+	--color-error-contrast-dark: #3b0a06;
+	--color-error-contrast-light: #ffffff;
+	--color-error-contrast-50: var(--color-error-contrast-dark);
+	--color-error-contrast-100: var(--color-error-contrast-dark);
+	--color-error-contrast-200: var(--color-error-contrast-dark);
+	--color-error-contrast-300: var(--color-error-contrast-dark);
+	--color-error-contrast-400: var(--color-error-contrast-light);
+	--color-error-contrast-500: var(--color-error-contrast-light);
+	--color-error-contrast-600: var(--color-error-contrast-light);
+	--color-error-contrast-700: var(--color-error-contrast-light);
+	--color-error-contrast-800: var(--color-error-contrast-light);
+	--color-error-contrast-900: var(--color-error-contrast-light);
+	--color-error-contrast-950: var(--color-error-contrast-light);
+
+	/* Surfaces: white → paper grey → hairline → ink */
+	--color-surface-50: #ffffff;
+	--color-surface-100: #fbfafc;
+	--color-surface-200: #f5f3f7;
+	--color-surface-300: #ece9f0;
+	--color-surface-400: #e7e4ec;
+	--color-surface-500: #d7d3dd;
+	--color-surface-600: #b9b4c2;
+	--color-surface-700: #8f8b99;
+	--color-surface-800: #5f5a6d;
+	--color-surface-900: #393347;
+	--color-surface-950: #100b28;
+	--color-surface-contrast-dark: #100b28;
+	--color-surface-contrast-light: #ffffff;
+	--color-surface-contrast-50: var(--color-surface-contrast-dark);
+	--color-surface-contrast-100: var(--color-surface-contrast-dark);
+	--color-surface-contrast-200: var(--color-surface-contrast-dark);
+	--color-surface-contrast-300: var(--color-surface-contrast-dark);
+	--color-surface-contrast-400: var(--color-surface-contrast-dark);
+	--color-surface-contrast-500: var(--color-surface-contrast-light);
+	--color-surface-contrast-600: var(--color-surface-contrast-light);
+	--color-surface-contrast-700: var(--color-surface-contrast-light);
+	--color-surface-contrast-800: var(--color-surface-contrast-light);
+	--color-surface-contrast-900: var(--color-surface-contrast-light);
+	--color-surface-contrast-950: var(--color-surface-contrast-light);
+}
+
+/* Extra brand tokens: use these directly in custom styles, so no component hardcodes colors */
+[data-theme='linkretro'] {
+	--lr-ink: #100b28;
+	--lr-paper: #f7f7f7;
+	--lr-line: #e7e4ec;
+	--lr-muted: #706c79;
+	--lr-purple: #b41674;
+	--lr-cyan: #20cdf0;
+	--lr-violet: #6926c8;
+	--lr-acid: #78ff43;
+	--lr-radius: 18px;
+}
