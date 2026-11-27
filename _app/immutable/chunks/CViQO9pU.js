@@ -1,0 +1,1 @@
+import"./DhWPzRf-.js";import{a as s}from"./DbBr-5cW.js";const n=async(e,a,t,w)=>{await t.writeValue(a);var i=e.byteLength-a[1];i>512&&(i=512);var r=new DataView(e.buffer,a[1],i);await w.writeValue(r),a[1]+=512,a[1]<e.byteLength&&await n(e,a,t,w)},m=async(e,a,t)=>{let w=await s(t,4);const i=await s(t,5),r=new Uint16Array([e,0]);await n(a,r,w,i)};export{m as w};

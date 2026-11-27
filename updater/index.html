@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FFFFFF">
+<title>LinkRetro · Wireless Receiver firmware update</title>
+<!--
+  LinkRetro wireless receiver — browser firmware updater (USB serial / CH340E)
+
+  Brand: LINKRETRO.COM    visual spec in site-theme.css
+  内核：esptool-js 0.7.0（Espressif，Apache-2.0）
+  来源：基于开源项目 BlueRetro（作者 darthcloud，Apache-2.0）的 LinkRetro 更新器
+
+  本页既可直接双击打开（file://），也可以被配置工具的「更新」页以内嵌方式加载：
+    index.html?embed=1   → 隐藏页内 logo（外层品牌条已经有了）
+
+  Styles: app.css is the updater stock skin; site-theme.css overrides it with the linkretro.com light visual language.
+-->
+<script>
+  // 内嵌模式标记要在 CSS 之前定，避免闪一下
+  if (location.search.indexOf('embed=1') !== -1) document.documentElement.classList.add('embed');
+</script>
+<link rel="icon" type="image/svg+xml" sizes="any" href="../brand/favicon.svg">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="site-theme.css">
+</head>
+<body class="steps">
+<input type="file" id="file-input" accept=".bin,application/octet-stream" hidden>
+
+<div class="wrap">
+
+  <!-- 浏览器不支持时的横幅 -->
+  <div class="banner" id="banner" hidden>
+    <b id="banner-title"></b>
+    <span id="banner-body"></span>
+  </div>
+
+  <!-- 品牌条：字标 + 状态 -->
+  <header class="plate">
+    <div class="plate-top">
+      <img class="wordmark" src="../brand/linkretro-logo.png" alt="LinkRetro">
+      <div class="plate-tools">
+        <div class="pill" id="pill"><span data-i18n="pill_detecting">○ 正在检测设备…</span></div>
+      </div>
+    </div>
+    <div class="plate-bottom">
+      <h1 data-i18n="app_product_short">Wireless Receiver</h1>
+      <span class="vsep" aria-hidden="true"></span>
+      <p>USB firmware update · connect the receiver, choose the firmware for your console, then start</p>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2 class="card-title">Connect the receiver</h2>
+    <div class="row">
+      <div class="dev" id="dev"><span data-i18n="dev_detecting">正在检测设备…</span></div>
+      <button class="btn ghost" id="btn-recheck">Detect again</button>
+    </div>
+    <p class="devmeta" id="devmeta" hidden></p>
+    <p class="hint" id="dev-hint">Plug the receiver into a USB port. If it does not show up, click
+      “Detect again” and pick its COM port in the dialog.</p>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">Choose the firmware</h2>
+    <div class="row">
+      <!-- 站点内置固件：由 tools/sync-firmware.mjs 生成 static/firmware/index.json -->
+      <div class="fwlist" id="fwlist" hidden>
+        <select class="fwselect" id="fwselect" aria-label="Built-in firmware"></select>
+      </div>
+      <div class="filebox empty" id="filebox" title="" data-i18n="pkg_none">尚未选择固件</div>
+      <button class="btn ghost" id="btn-choose" data-i18n="btn_choose_fw">选择固件…</button>
+    </div>
+    <!-- 选中内置固件后的一行摘要：文件名 + 是否最新 -->
+    <p class="fwline" id="fwline" hidden>
+      <span class="fwfile" id="fwfile"></span>
+      <span class="fwlatest" id="fwlatest" hidden>✓ Latest version</span>
+    </p>
+    <p class="hint" id="fw-hint">Pick the firmware for your console. It is selected automatically once the
+      receiver is detected.</p>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">Start the update</h2>
+    <div class="bar"><div class="bar-fill" id="bar"></div></div>
+    <p class="phase" id="phase">—</p>
+    <div class="actions"><button class="btn primary" id="btn-start">Start update</button></div>
+  </section>
+
+  <!-- 为什么用 USB：给用户看的简短说明 -->
+  <p class="whyusb">
+    <b>Why USB?</b> The firmware is written straight to the chip’s flash in ROM download mode, so it
+    works even when the receiver’s firmware or Bluetooth is unresponsive — it is also faster, and the
+    result is read back and verified afterwards. Bluetooth update is the convenient option when the
+    receiver is already paired and running.
+  </p>
+
+  <footer class="foot">
+    <div class="foot-left">
+      <p class="jzw-caption">PLUG &amp; PLAY · ONE-CLICK UPDATE · USB</p>
+      <p class="safety" data-i18n="foot_safety">更新过程中请不要拔下 USB 或关闭程序</p>
+      <p class="credit">
+        <span class="domain">LINKRETRO.COM</span> ·
+        <span data-i18n="credit">基于开源项目 BlueRetro（作者 darthcloud）</span> ·
+        <a href="tester.html" data-i18n="tester_title">手柄检测</a>
+      </p>
+    </div>
+    <button class="btn ghost" id="btn-adv" data-i18n="btn_advanced">高级选项…</button>
+  </footer>
+</div>
+
+<!-- 高级选项 / 诊断 -->
+<div class="overlay" id="adv" hidden>
+  <div class="panel">
+    <h2 data-i18n="adv_title">高级选项 / 诊断</h2>
+    <p class="hint" data-i18n="adv_note">日常不需要用到这里。</p>
+    <div class="advrow">
+      <span class="lbl" data-i18n="adv_port">串口：</span>
+      <span class="mono" id="adv-port" data-i18n="adv_auto">（自动识别）</span>
+      <span class="grow"></span>
+    </div>
+    <div class="advrow">
+      <button class="btn ghost small" id="btn-showall" data-i18n="adv_show_all">显示所有串口</button>
+      <button class="btn ghost small" id="btn-readver" data-i18n="adv_readver">读取当前版本</button>
+      <button class="btn ghost small" id="btn-erase" data-i18n="adv_erase">擦除整片 Flash</button>
+    </div>
+    <pre class="log" id="log"></pre>
+    <div class="advbtns">
+      <button class="btn ghost small" id="btn-copylog" data-i18n="adv_copy">复制日志</button>
+      <button class="btn ghost small" id="btn-clearlog" data-i18n="adv_clear">清空日志</button>
+      <span class="grow"></span>
+      <button class="btn ghost" id="btn-closeadv" data-i18n="btn_close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 通用对话框 -->
+<div class="overlay" id="modal" hidden>
+  <div class="panel narrow">
+    <h2 id="m-title">提示</h2>
+    <pre class="mbody" id="m-body"></pre>
+    <div class="advbtns">
+      <button class="btn ghost" id="m-cancel" hidden data-i18n="btn_cancel">取消</button>
+      <span class="grow"></span>
+      <button class="btn ghost" id="m-alt" hidden></button>
+      <button class="btn primary" id="m-ok" data-i18n="btn_ok">好</button>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="jzw-i18n.js"></script>
+<script src="vendor/esptool-js.js"></script>
+<script src="js/image.js"></script>
+<script src="js/esptool-runner.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+@font-face {
+	font-family: 'Space Grotesk';
+	font-style: normal;
+	font-weight: 300 700;
+	font-display: swap;
+	src: url('./fonts/space-grotesk-latin.woff2') format('woff2');
+}
+
+/*!
+ * site-theme.css — 把固件更新工具换成 linkretro.com 的视觉
+ *
+ * 原 app.css 是更新器自带的深色皮肤（之前又压过一层碳底红）。
+ * 这里不改原文件，只在它之后覆盖令牌与少数「只适合深色」的硬编码样式，
+ * 便于以后跟上游更新器同步（重新拷贝 app.css 也不会冲掉这份主题）。
+ *
+ * 色值与字体取自 linkretro.com 的设计令牌：
+ *   纸灰 #F7F7F7 · 墨色 #100B28 · 描边 #E7E4EC · 弱化 #706C79
+ *   主色紫红 #B41674 · 青 #20CDF0 · 绿 #2FBF72 · 红 #D92D20
+ *   标题 Space Grotesk（随站点打包，SIL OFL 1.1）
+ */
+
+:root {
+	--bg: #f7f7f7;
+	--bg-2: #fbfafc;
+	--panel: #ffffff;
+	--panel-2: #f7f7f7;
+	--panel-3: #f5f3f7;
+	--line: #e7e4ec;
+	--line-2: #e7e4ec;
+	--border: #e7e4ec;
+	--plate: #ffffff;
+	--plate-hi: #fbfafc;
+	--text: #100b28;
+	--muted: #706c79;
+	--dim: #706c79;
+	--dimmer: #8f8b99;
+	--accent: #b41674;
+	--accent-hi: #d4408f;
+	--accent-lo: #94105e;
+	--accent-fg: #ffffff;
+	--ok: #128c4a;
+	--warn: #e0501c;
+	--err: #d92d20;
+	--info: #0a8ead;
+	--radius: 14px;
+	--font: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Microsoft YaHei UI', 'PingFang SC',
+		sans-serif;
+}
+
+/* ---------- 页面底：去掉深绿的辉光 ---------- */
+body {
+	background: var(--bg);
+	color: var(--text);
+}
+
+::selection {
+	background: rgba(180, 22, 116, 0.18);
+	color: #242133;
+}
+
+/* ---------- 不支持提示横幅：改成浅琥珀 ---------- */
+.banner {
+	background: #fffaf0;
+	border: 1px solid #f2ddb4;
+	border-left: 3px solid #f5a524;
+	color: #8c500e;
+}
+
+.banner b {
+	color: #8c500e;
+}
+
+/* ---------- 品牌条：白面细描边，底部一条紫→紫罗兰渐隐细线 ---------- */
+.plate {
+	background: var(--plate);
+	border: 1px solid var(--line-2);
+	border-radius: var(--radius);
+	box-shadow: 0 1px 2px rgb(36 33 51 / 0.04);
+}
+
+.plate::before {
+	display: none;
+}
+
+.plate::after {
+	background: linear-gradient(
+		90deg,
+		var(--accent) 0%,
+		rgba(180, 22, 116, 0.35) 38%,
+		rgba(180, 22, 116, 0) 78%
+	);
+}
+
+.wordmark {
+	filter: none;
+}
+
+.plate-bottom h1 {
+	color: var(--text);
+}
+
+.plate-bottom .vsep {
+	background: var(--line-2);
+}
+
+.plate-bottom p {
+	color: var(--muted);
+}
+
+/* ---------- 语言选择 / 状态胶囊 ---------- */
+.langsel {
+	background: #ffffff;
+	border: 1px solid var(--line-2);
+	color: var(--text);
+	border-radius: 100px;
+	padding: 6px 12px;
+}
+
+.langsel:hover {
+	color: var(--accent);
+	border-color: var(--accent);
+}
+
+.pill {
+	background: #ffffff;
+	border: 1px solid var(--line-2);
+	color: var(--muted);
+	border-radius: 100px;
+}
+
+.pill.ok {
+	color: #ffffff;
+	background: var(--ok);
+	border-color: var(--ok);
+}
+
+.pill.warn {
+	color: #8c500e;
+	background: #fef7e7;
+	border-color: #f5d9a8;
+}
+
+.pill.err {
+	color: #b3170f;
+	background: #fff0ef;
+	border-color: #f9bfb8;
+}
+
+.pill.info {
+	color: #1e6c84;
+	background: #eaf7fb;
+	border-color: #a7dceb;
+}
+
+/* ---------- 卡片 ---------- */
+.card {
+	background: var(--panel);
+	border: 1px solid var(--line-2);
+	border-radius: var(--radius);
+	box-shadow: 0 1px 2px rgb(36 33 51 / 0.04);
+}
+
+.card::before {
+	display: none;
+}
+
+.card-title {
+	color: var(--muted);
+}
+
+body.steps .card-title::before {
+	color: var(--accent);
+	background: rgba(180, 22, 116, 0.08);
+	border: 1px solid rgba(180, 22, 116, 0.22);
+}
+
+.card-title::after {
+	background: linear-gradient(90deg, var(--line-2), rgba(212, 209, 229, 0));
+}
+
+/* ---------- 固件框 / 设备行 / 提示 ---------- */
+.filebox {
+	background: var(--bg-2);
+	border: 1px solid var(--line-2);
+	border-radius: 10px;
+	color: var(--text);
+}
+
+.filebox.empty {
+	color: var(--dim);
+}
+
+.dev.ok {
+	color: #3c8512;
+}
+
+.dev.ok::before {
+	background: #67d921;
+	box-shadow: 0 0 0 3px rgba(103, 217, 33, 0.18);
+}
+
+.dev.warn {
+	color: #8c500e;
+}
+
+.dev.warn::before {
+	background: #f5a524;
+	box-shadow: 0 0 0 3px rgba(245, 165, 36, 0.16);
+}
+
+.dev.err {
+	color: #b3170f;
+}
+
+.dev.err::before {
+	background: #f72b20;
+	box-shadow: 0 0 0 3px rgba(247, 43, 32, 0.14);
+}
+
+.hint {
+	color: var(--muted);
+}
+
+.hint.ok {
+	color: #3c8512;
+}
+
+.hint.warn {
+	background: #fef7e7;
+	border-color: #f5d9a8;
+	border-left-color: #f5a524;
+	color: #8c500e;
+}
+
+.hint.err {
+	background: #fff0ef;
+	border-color: #f9bfb8;
+	border-left-color: #f72b20;
+	color: #b3170f;
+}
+
+/* ---------- 按钮：官网药丸 ---------- */
+.btn {
+	border-radius: 100px;
+	border: 1px solid var(--line-2);
+	background: #ffffff;
+	color: var(--text);
+	font-weight: 500;
+}
+
+.btn:hover {
+	border-color: #c2bed4;
+	background: var(--panel-3);
+}
+
+.btn.ghost {
+	background: #ffffff;
+	color: #4a455f;
+	border-color: var(--line-2);
+}
+
+.btn.ghost:hover {
+	color: var(--accent);
+	border-color: var(--accent);
+	background: rgba(180, 22, 116, 0.05);
+}
+
+.btn.primary {
+	background: var(--accent);
+	color: #ffffff;
+	border-color: transparent;
+	font-weight: 600;
+	box-shadow: 0 8px 18px -10px rgba(180, 22, 116, 0.6);
+}
+
+.btn.primary:hover {
+	background: var(--accent-lo);
+	box-shadow: 0 10px 22px -10px rgba(180, 22, 116, 0.65);
+}
+
+.btn.primary:active {
+	background: #7a0f4f; /* 比 --accent-lo(#94105e) 再深一档的按下态 */
+	box-shadow: none;
+}
+
+.btn.primary[disabled]:hover {
+	background: var(--accent);
+}
+
+/* ---------- 进度条 ---------- */
+.bar {
+	background: var(--panel-3);
+	border: 1px solid var(--line-2);
+}
+
+.bar-fill {
+	background: linear-gradient(90deg, var(--accent-lo), var(--accent-hi));
+	box-shadow: none;
+}
+
+.bar-fill.done {
+	background: linear-gradient(90deg, #3c8512, #67d921);
+	box-shadow: none;
+}
+
+.bar-fill.fail {
+	background: linear-gradient(90deg, #b3170f, #f72b20);
+	box-shadow: none;
+}
+
+.phase {
+	color: var(--muted);
+}
+
+/* ---------- 页脚 ---------- */
+.foot {
+	border-top: 1px solid var(--line);
+}
+
+.foot .jzw-caption {
+	color: var(--dimmer);
+}
+
+.foot .safety {
+	color: var(--dim);
+}
+
+.foot .credit {
+	color: var(--dimmer);
+}
+
+.foot .credit .domain {
+	color: var(--dim);
+}
+
+.foot .credit a {
+	color: var(--dim);
+}
+
+.foot .credit a:hover {
+	color: var(--accent);
+}
+
+/* ---------- 浮层 / 面板 / 日志 ---------- */
+.overlay {
+	background: rgba(36, 33, 51, 0.42);
+}
+
+.panel {
+	background: #ffffff;
+	border: 1px solid var(--line-2);
+	border-radius: 16px;
+	box-shadow: 0 24px 60px -28px rgba(36, 33, 51, 0.35);
+}
+
+.log {
+	background: var(--bg-2);
+	border: 1px solid var(--line-2);
+	color: #3b3850;
+}
+
+.mbody {
+	color: var(--text);
+}
+
+.sel {
+	background: #ffffff;
+	border: 1px solid var(--line-2);
+	border-radius: 10px;
+	color: var(--text);
+}
+
+/* 设备上固件的版本 / 编译时间 / 匹配到的型号 */
+.devmeta {
+	margin: 8px 0 0;
+	font-family: var(--mono);
+	font-size: 11.5px;
+	line-height: 1.5;
+	color: var(--dim);
+}
+
+.devmeta[hidden] {
+	display: none;
+}
+
+/* ---------- 站点内置固件清单（构建时生成） ---------- */
+.fwlist {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+/* 有下拉框时，空文件框 hide 掉，避免和下拉框的「尚未选择」重复 */
+body.has-fwlist .filebox.empty {
+	display: none;
+}
+
+/* 有内置固件清单时，「选择固件…」按钮和文件框都不再需要（改由下拉框选） */
+body.has-fwlist #btn-choose,
+body.has-fwlist #filebox {
+	display: none;
+}
+
+/* 选中内置固件后的一行摘要：文件名 + 「已是最新版本」 */
+.fwline {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 10px 0 0;
+}
+
+.fwline[hidden] {
+	display: none;
+}
+
+.fwfile {
+	font-family: var(--mono);
+	font-size: 11.5px;
+	color: var(--dim);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 100%;
+}
+
+.fwlatest {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 3px 10px;
+	border-radius: 100px;
+	background: rgba(71, 163, 22, 0.1);
+	border: 1px solid rgba(71, 163, 22, 0.35);
+	color: #3c8512;
+	font-size: 11.5px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.fwlatest[hidden] {
+	display: none;
+}
+
+.fwselect {
+	width: 100%;
+	background: #ffffff;
+	border: 1px solid var(--line-2);
+	border-radius: 100px;
+	padding: 10px 16px;
+	font-family: inherit;
+	font-size: 13.5px;
+	color: var(--text);
+	cursor: pointer;
+	transition: border-color 100ms ease;
+}
+
+.fwselect:hover {
+	border-color: var(--accent);
+}
+
+.fwselect:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+/* 为什么用 USB 的说明（页面底部小字） */
+.whyusb {
+	margin: 14px 2px 0;
+	max-width: 46rem;
+	font-size: 11.5px;
+	line-height: 1.65;
+	color: var(--dim);
+}
+
+.whyusb b {
+	color: var(--muted);
+	font-weight: 700;
+}
+
+/* ---------- 嵌进配置工具时：logo 由外层品牌条承担，这里不重复 ---------- */
+html.embed .wordmark {
+	display: none;
+}
+
+html.embed .plate-tools {
+	margin-left: auto;
+}
+
+html.embed body {
+	padding-top: 14px;
+}
+
+/* 浅色下淡一点的焦点环 */
+.btn:focus-visible,
+.langsel:focus-visible,
+.sel:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+/* ---------- 标题字体：与官网一致用 Space Grotesk ---------- */
+:root {
+	--font-display: 'Space Grotesk', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.plate h1,
+.card-title,
+.phase {
+	font-family: var(--font-display);
+	letter-spacing: -0.02em;
+}

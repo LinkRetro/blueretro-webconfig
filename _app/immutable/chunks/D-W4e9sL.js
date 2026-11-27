@@ -1,0 +1,1 @@
+const n=(d,t)=>{var o=window.URL.createObjectURL(d),e=document.createElement("a");e.style.cssText="display: none",e.href=o,e.download=t,document.body.appendChild(e),e.click(),document.body.removeChild(e),setTimeout(function(){window.URL.revokeObjectURL(o)},1e3)};export{n as d};
