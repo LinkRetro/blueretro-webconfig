@@ -37,9 +37,9 @@
 		<span class="bt-help-icon" aria-hidden="true"><IconBluetooth class="size-5" /></span>
 		<div class="bt-help-copy">
 			<h2 id="bt-help-title">Bluetooth is required</h2>
-			<p>
-				This page configures the receiver over Bluetooth. A computer without Bluetooth cannot
-				connect to it.
+			<p class="bt-help-lead">
+				This page configures the receiver over Bluetooth.
+				<strong>A computer without Bluetooth cannot connect to it.</strong>
 			</p>
 		</div>
 		{#if supported !== null}

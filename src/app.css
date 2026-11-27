@@ -754,10 +754,16 @@ div.max-w-2xl:has(.update-page) {
 }
 
 .bt-help-copy p {
-	margin: 2px 0 0;
-	font-size: 0.78rem;
-	line-height: 1.55;
-	color: #706c79;
+	margin: 3px 0 0;
+	font-size: 0.92rem;
+	font-weight: 500;
+	line-height: 1.5;
+	color: #4a455f;
+}
+
+.bt-help-copy p strong {
+	color: #b41674;
+	font-weight: 700;
 }
 
 .bt-status {
