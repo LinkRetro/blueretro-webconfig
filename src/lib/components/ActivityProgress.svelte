@@ -8,6 +8,8 @@
 		max?: number;
 		onCancelClick: VoidFunction;
 		labelText?: string;
+		/** Hide the cancel button for operations that must not be interrupted (BLE OTA). */
+		showCancel?: boolean;
 	}
 
 	let {
@@ -15,15 +17,18 @@
 		progress = 0,
 		max = 100,
 		onCancelClick,
-		labelText
+		labelText,
+		showCancel = true
 	}: Props = $props();
 </script>
 
 {#if isDoingSomething}
 	<div class="flex flex-row items-center">
 		<Progress height="h-4" classes="gap-0" value={progress} {max} >{labelText}</Progress>
-		<button class="btn btn-icon text-error-500" onclick={onCancelClick}>
-			<IconSquareX />
-		</button>
+		{#if showCancel}
+			<button class="btn btn-icon text-error-500" onclick={onCancelClick}>
+				<IconSquareX />
+			</button>
+		{/if}
 	</div>
 {/if}

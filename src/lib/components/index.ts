@@ -5,6 +5,7 @@ import GameId from './GameId.svelte'
 import FirmwareUpdateBle from './FirmwareUpdateBle.svelte'
 import HelpTip from './HelpTip.svelte'
 import PageGuide from './PageGuide.svelte'
+import BluetoothHelp from './BluetoothHelp.svelte'
 
 export {
 	ButtonMapping,
@@ -13,5 +14,6 @@ export {
 	GameId,
 	FirmwareUpdateBle,
 	HelpTip,
-	PageGuide
+	PageGuide,
+	BluetoothHelp
 }

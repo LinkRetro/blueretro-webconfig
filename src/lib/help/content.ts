@@ -41,9 +41,12 @@ export const chapters: Chapter[] = [
 		title: 'Before you start',
 		body: [
 			'Your LinkRetro receiver turns modern Bluetooth controllers, keyboards and mice into signals an old console understands (PS2, N64, Dreamcast, PS1 and so on). This web tool is where you set it up.',
+			'Your computer must have Bluetooth: built into most laptops, or added with a USB Bluetooth adapter on desktops. Without Bluetooth the browser cannot see the receiver at all.',
 			'You need Chrome or Edge — desktop or Android. Safari on iPhone / iPad does not support Web Bluetooth, so these pages will not work there.',
+			'Turn Bluetooth on in the system settings (Windows: Settings → Bluetooth & devices; macOS: Control Centre) and allow the browser Bluetooth prompt when it appears.',
 			'Disconnect your controllers from the receiver before connecting (let them sleep or turn them off). Otherwise the browser may fail to pair.',
 			'Click Select Device in the top bar and pick the device that starts with BlueRetro_. Once connected the button shows the device name and firmware version; click it to see the address or disconnect.',
+			'If the receiver never appears: close other apps that use Bluetooth, move closer, reload the page and try again. A USB Bluetooth adapter on a desktop works just as well as built-in Bluetooth.',
 			'Most fields are greyed out until you connect. That is normal: the settings live on the receiver, so it has to be connected first.'
 		]
 	},
@@ -94,7 +97,8 @@ export const chapters: Chapter[] = [
 			'Two routes: USB Update (cable, desktop browser) and OTA Update (wireless over Bluetooth, works on phones too).',
 			'USB uses the chip’s download mode and can rescue a receiver that no longer connects. OTA is for a receiver that still works and pairs.',
 			'OTA only accepts the app-only image; full packages must go over USB. The built-in firmware list on the site is already split by type — just pick from the dropdown.',
-			'Do not unplug, close the page or cut power during an update. The receiver restarts by itself when writing finishes.'
+			'A Bluetooth update can take several minutes. Do not disconnect, close the page, or power off the receiver while the progress bar is moving — the page warns you and asks before closing.',
+			'When writing finishes the page shows a green confirmation with its own message; the receiver restarts with the new firmware and you can disconnect. If it fails, reconnect and retry, or use USB Update for a full recovery.'
 		]
 	},
 	{
@@ -464,12 +468,13 @@ export const pages: PageDoc[] = [
 		slug: 'ota',
 		nav: 'OTA Update',
 		title: 'OTA Update',
-		summary: 'Flash firmware wirelessly over Bluetooth — works on phones too. It only accepts the app-only image; full packages go on the USB page.',
+		summary: 'Flash firmware wirelessly over Bluetooth — works on phones too. It only accepts the app-only image; full packages go on the USB page. Keep the page open until the update finishes.',
 		steps: [
 			'Click Connect over Bluetooth to connect the receiver.',
 			'Pick firmware from the built-in list; the newest is tagged ✓ Latest version.',
-			'Press Write; the receiver restarts when it finishes.',
-			'If the receiver no longer connects, use USB Update instead — OTA cannot reach it.'
+			'Press Write. A Bluetooth update can take several minutes: do not disconnect, close the page, or power off the receiver while the bar is moving.',
+			'When it finishes a green confirmation appears and the receiver restarts. You can disconnect then; if it fails, reconnect and retry or use USB Update.',
+			'If the receiver no longer connects at all, use USB Update instead — OTA cannot reach it.'
 		],
 		fields: {
 			firmware: {
@@ -478,7 +483,7 @@ export const pages: PageDoc[] = [
 			},
 			write: {
 				label: 'Write',
-				help: 'Writes the selected firmware to the receiver. Keep the page open and do not cut power while it runs.'
+				help: 'Writes the selected firmware to the receiver. It can take several minutes; keep the page open and do not cut power while it runs. The page warns you and shows a confirmation when done.'
 			},
 			model: {
 				label: 'Model memory',

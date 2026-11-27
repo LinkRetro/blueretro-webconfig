@@ -25,6 +25,22 @@
 	let isCanceling = false;
 	let files: FileList | undefined = $state();
 
+	type Phase = 'idle' | 'writing' | 'done' | 'error';
+	/** Writing state drives the "do not disconnect" warning and the result banner. */
+	let phase = $state<Phase>('idle');
+	let resultText = $state('');
+
+	// Warn before closing or reloading while a BLE update is running.
+	$effect(() => {
+		if (phase !== 'writing') return;
+		const warn = (event: BeforeUnloadEvent) => {
+			event.preventDefault();
+			event.returnValue = '';
+		};
+		window.addEventListener('beforeunload', warn);
+		return () => window.removeEventListener('beforeunload', warn);
+	});
+
 	/** Firmware picked from the site manifest */
 	let siteFile: File | undefined = $state();
 	let siteName = $state('');
@@ -59,6 +75,15 @@
 	});
 
 	onMount(async () => {
+		// Debug hook: /system/ota?debug=1 exposes the result banners for UI testing
+		// without hardware (the page's __updateTest only fakes the connection).
+		if (new URLSearchParams(location.search).has('debug')) {
+			(window as unknown as Record<string, unknown>).__bleTest = {
+				phase: (next: Phase) => (phase = next),
+				result: (text: string) => (resultText = text)
+			};
+		}
+
 		try {
 			const res = await fetch(`${base}/ota/index.json`, { cache: 'no-store' });
 			if (res.ok) {
@@ -196,6 +221,8 @@
 
 	const connect = async () => {
 		isConnecting = true;
+		phase = 'idle';
+		resultText = '';
 		try {
 			await getService(0, { isCanceled: false });
 			toaster.success({ title: `Connected to the ${brand.product}` });
@@ -259,9 +286,13 @@
 		siteFile = undefined;
 		siteName = '';
 		pickName = '';
+		phase = 'idle';
+		resultText = '';
 	};
 
 	const onPickChange = async (name: string) => {
+		phase = 'idle';
+		resultText = '';
 		pickName = name;
 		if (!name) {
 			clearPicked();
@@ -298,6 +329,8 @@
 					return;
 				}
 				isDoingSomething = true;
+				phase = 'writing';
+				resultText = '';
 				const serv = await getService();
 				const reader = new FileReader();
 				reader.onabort = (_) => {
@@ -312,13 +345,25 @@
 							var success = await otaWriteFirmware(serv, reader.result as ArrayBuffer);
 
 							if (success) {
-								toaster.success({ title: 'Success updating firmware' });
+								phase = 'done';
+								resultText = 'The receiver restarted with the new firmware.';
+								toaster.success({
+									title: 'Firmware update complete',
+									description: 'The receiver restarted. You can disconnect now.'
+								});
 							} else {
-								toaster.error({ title: 'There was an error updating the firmware!' });
+								phase = 'error';
+								resultText = 'The receiver reported an error while writing.';
+								toaster.error({
+									title: 'Update failed',
+									description: 'Reconnect and try again, or use USB Update for a full recovery.'
+								});
 							}
 
 							device.set(undefined);
 						} else {
+							phase = 'error';
+							resultText = 'This firmware does not match this hardware revision.';
 							toaster.error({ title: 'Hardware and firmware mismatch!' });
 						}
 					}
@@ -333,6 +378,8 @@
 				// Read in the image file as a binary string.
 				reader.readAsArrayBuffer(target);
 			} catch {
+				phase = 'error';
+				resultText = 'The browser could not finish writing the firmware.';
 				toaster.error({ title: 'There was an error updating the firmware!' });
 				isDoingSomething = false;
 				progress = 0;
@@ -455,13 +502,37 @@
 			</button>
 		</div>
 
-	<ActivityProgress
-		max={100}
-		onCancelClick={cancelClick}
-		{progress}
-		{isDoingSomething}
-		labelText="Updating…"
-	/>
+		{#if phase === 'writing'}
+			<div class="ble-warning" role="status" aria-live="polite">
+				<b>Do not disconnect.</b> Keep this page open and leave the receiver powered until the
+				update finishes — a Bluetooth update can take several minutes.
+			</div>
+		{:else if phase === 'done'}
+			<div class="ble-result ble-result-ok" role="status" aria-live="polite">
+				<b>Firmware update complete.</b>
+				{resultText} You can disconnect now.
+			</div>
+		{:else if phase === 'error'}
+			<div class="ble-result ble-result-error" role="alert">
+				<b>Update failed.</b>
+				{resultText}
+				Reconnect and try again, or use USB Update for a full recovery.
+			</div>
+		{:else}
+			<p class="ble-hint ble-prehint">
+				A Bluetooth update usually takes a few minutes. Keep this page open and the receiver
+				powered until it finishes.
+			</p>
+		{/if}
+
+		<ActivityProgress
+			max={100}
+			onCancelClick={cancelClick}
+			{progress}
+			{isDoingSomething}
+			showCancel={false}
+			labelText="Updating… keep this page open"
+		/>
 
 	<!-- Placement note mirroring the USB panel -->
 	<p class="ble-why">

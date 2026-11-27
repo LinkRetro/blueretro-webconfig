@@ -3,7 +3,7 @@
 	import { Toaster, Modal } from '@skeletonlabs/skeleton-svelte';
 	import { IconBrandGithub, IconMenu2, IconBluetoothConnected } from '@tabler/icons-svelte';
 	import { deviceConfig, device, service } from '$lib/stores';
-	import { NavigationMenu, ActivityProgress } from '$lib/components';
+	import { NavigationMenu, ActivityProgress, BluetoothHelp } from '$lib/components';
 	import { getService, toaster } from '$lib/utilities';
 	import { brand } from '$lib/brand';
 	import { base } from '$app/paths';
@@ -21,6 +21,8 @@
 	let isUpdatePage = $derived(
 		page.url.pathname.includes('/system/update') || page.url.pathname.includes('/system/ota')
 	);
+	let isUsbUpdatePage = $derived(page.url.pathname.includes('/system/update'));
+	let isOtaPage = $derived(page.url.pathname.includes('/system/ota'));
 	let isGuidePage = $derived(page.url.pathname.includes('/guide'));
 
 	let isGettingService = $state(false);
@@ -284,6 +286,9 @@
 			{/if}
 
 			<div class="lr-page-scroll p-2 md:p-4 flex flex-col gap-4 max-w-2xl overflow-auto flex-1">
+				{#if !$deviceConfig && !isGuidePage && !isUsbUpdatePage}
+					<BluetoothHelp compact={isOtaPage} />
+				{/if}
 				{@render children?.()}
 			</div>
 		</div>
